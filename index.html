@@ -3,17 +3,42 @@
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <link rel="stylesheet" href="./style.css">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="./standartizer.css">
-    <link rel="stylesheet" href="./style.css">
     <title>Chat NodeJS</title>
 </head>
 <body>
-    <header>
+    <header id="header">
         <div class="container">
             <h1>Chat Node JS</h1>
+            <p>Creating by <a href="https://github.com/Srr233/">Sr233</a></p>
         </div>
     </header>
-    <script src="./index.js"></script>
+    <main id="main">
+        <div class="main">
+            <div class="container">
+                <div class="chatNames">
+                    <span class="chatName">Main</span>
+                </div>
+                <div class="chat">
+                    <div class="block-messages">
+                        <div class="message">
+                            <span id="name">Name</span>: <span id="message">Hi!</span>
+                        </div>
+                    </div>
+                    <div class="write-message-block">
+                        <input class="currMessage" type="text">
+                        <button class="send">SEND</button>
+                    </div>
+                </div>
+                <div class="users">
+                    <div class="user" data-id="bba2st">Sergey Saltanovich</div>
+                </div>
+                <button class="createChat">Create chat</button>
+            </div>
+        </div>
+    </main>
+    <script type="module" src="./index.js"></script>
 </body>
 </html>

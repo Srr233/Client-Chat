@@ -1,4 +1,96 @@
+:root {
+    font-size: 10px;
+}
+body {
+    height: 100vh;
+}
 .container {
     max-width: 1200px;
     padding: 0 10px 0 10px;
+}
+h1 {
+    font-size: 5rem;
+}
+
+#header {
+    background-color: beige;
+}
+
+#main {
+    background-color: bisque;
+    height:  95%;
+}
+.main {
+}
+
+.main .container {
+    margin: 0 auto;
+    height: 100%;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-rows: 1fr 1fr 1fr 1fr 1fr 1fr ;
+    grid-template-areas: 
+            "chatsName chatsName chatsName"
+            "chat chat users"
+            "chat chat users"
+            "chat chat users"
+            "chat chat users"
+            "chat chat createChat";
+}
+
+.flexBlocks {
+    height: 100%;
+}
+
+.chatNames {
+    padding: 5px;
+    grid-area: chatsName;
+    height: 100%;
+    width: 100%;
+    background-color: antiquewhite;
+}
+.chatName {
+    font-size: 2rem;
+    background-color: #fff;
+    padding: 5px;
+    margin: 5px;
+}
+
+.chat {
+    padding: 5px;
+    grid-area: chat;
+    background-color: burlywood;
+}
+.createChat {
+    font-size: 2rem;
+    grid-area: createChat;
+}
+.users {
+    margin: 5px;
+    padding: 5px;
+    grid-area: users;
+    background-color: #fff;
+    font-size: 2rem;
+    height: 60vh;
+    overflow: auto;
+}
+
+.user {
+    margin: 10px;
+    background-color: antiquewhite;
+}
+
+.block-messages {
+    background-color: #fff;
+    height: 60vh;
+    overflow: auto;
+    font-size: 1.8rem;
+}
+
+.write-message-block input {
+    width: 89%;
+}
+
+.write-message-block button {
+    width: 10%;
 }
