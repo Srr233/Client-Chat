@@ -42,8 +42,8 @@ webSocketServer.onmessage = (responce) => {
 
 sendButton.addEventListener('click', () => {
     sendData.sendMessageToChat(myInfo, inputMessage.value);
+    myUtil.addMessage(myInfo.name, inputMessage.value, blockMessages);
     inputMessage.value = '';
-    myUtil.addMessage(myInfo.name, message, blockMessages);
 });
 const messagesBlockUser = document.querySelector('.userChat__messages');
 
