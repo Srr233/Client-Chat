@@ -12,7 +12,8 @@ const blockMessages = document.querySelector('.block-messages');
 const chatUserBlock = document.querySelector('.userChat');
 
 const myInfo = {};
-const webSocketServer = new WebSocket('ws://localhost:8080');
+const webSocketServer = new WebSocket('wss://nodejschatsaltanovich.herokuapp.com/');
+
 const handlerServer = new HandlerServerMessages();
 const sendData = new SendData(webSocketServer);
 const userMessages = new UserMessages();
@@ -79,8 +80,8 @@ chatUserBlock.addEventListener('click', ({ target }) => {
 
     if (classOfStyle === 'send') {
         sendData.sendMessageToUser(chatUserBlock.dataset.currentUser, myInfo, inputTarget.value);
-        inputTarget.value = '';
         myUtil.addMessage(myInfo.name, inputTarget.value, blockUserMessages);
+        inputTarget.value = '';
         return;
     }
 })
