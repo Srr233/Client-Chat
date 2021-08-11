@@ -10,14 +10,33 @@ function userLeftMessage(currChatID, name, messageBlockElement) {
         <span id="name">${name}</span> <span id="message">Left from the chat :(</span>
     </div>`);
 }
-function addPesonInCurrentChat(user, chat, chatElement) {
+function addPesonInCurrentChat(user, chat, chatElement, myID) {
+    if (myID === user.ID) {
+        chatElement.insertAdjacentHTML('beforeend', 
+        `<div class="user curr-user" data-id="${user.ID}">${user.name}</div>`);
+        return;
+    }
     chatElement.insertAdjacentHTML('beforeend', 
-    `<div class="user" data-id="${user.ID}">${user.name}</div>`);
+        `<div class="user hover" data-id="${user.ID}">${user.name}</div>`);
 }
 
+function createSendMessageTo(fromID, toID, message) {
+    return {
+        fromID,
+        toID,
+        message,
+        type: 'messageUser'
+    }
+}
+
+function getIDFromDocument(target) {
+    return target.data.ID;
+}
 const myUtil = {
     addMessage,
     userLeftMessage,
+    getIDFromDocument,
+    createSendMessageTo,
     addPesonInCurrentChat,
 }
 
