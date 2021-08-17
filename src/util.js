@@ -32,9 +32,36 @@ function createSendMessageTo(fromID, toID, message) {
 function getIDFromDocument(target) {
     return target.data.ID;
 }
+
+function createChat(element, name, id) {
+    element.insertAdjacentHTML('beforeend', 
+    `<span class="chatName" data-id="${id}">${name}</span>`);
+}
+
+function clearInputs(inputs) {
+    if (Array.isArray(inputs)) {
+        inputs.forEach(i => { i.value = '' });
+    }
+    inputs.value = '';
+}
+
+function clearAllChildren(element) {
+    if (Array.isArray(element)) {
+        element.forEach(el => {
+            while(el.childElementCount) el.children[0].remove();
+        });
+        return;
+    }
+
+    while(element.childElementCount) element.children[0].remove();
+}
+
 const myUtil = {
+    clearInputs,
+    createChat,
     addMessage,
     userLeftMessage,
+    clearAllChildren,
     getIDFromDocument,
     createSendMessageTo,
     addPesonInCurrentChat,

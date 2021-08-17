@@ -22,13 +22,20 @@
                     <span class="chatName">Main</span>
                 </div>
                 <div class="chat">
+                    <div class="newChat-block closed">
+                        <button class="newChat-block__close">x</button>
+                        <span>Create a chat</span>
+                        <input type="text" placeholder="name" class="newChat-block__name">
+                        <input type="text" placeholder="password" class="newChat-block__password">
+                        <button class="newChat-block__button">create</button>
+                    </div>
                     <div class="block-messages"></div>
                     <div class="write-message-block">
                         <input class="currMessage" type="text">
                         <button class="send">SEND</button>
                     </div>
                 </div>
-                <div class="userChat chatClosed">
+                <div class="userChat closed">
                     <button class="close">x</button>
                     <div class="userChat__messages"></div>
                     <div class="write-message-block-user">

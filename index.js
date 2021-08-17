@@ -5,6 +5,7 @@ import SendData from './src/SendData.js';
 
 const createChatButton = document.querySelector('.createChat');
 const chatNames = document.querySelector('.chatNames');
+const newChatBlock = document.querySelector('.newChat-block');
 const usersBlock = document.querySelector('.users');
 const sendButton = document.querySelector('.send');
 const inputMessage = document.querySelector('.currMessage');
@@ -12,7 +13,8 @@ const blockMessages = document.querySelector('.block-messages');
 const chatUserBlock = document.querySelector('.userChat');
 
 const myInfo = {};
-const webSocketServer = new WebSocket('wss://nodejschatsaltanovich.herokuapp.com/');
+// const webSocketServer = new WebSocket('wss://nodejschatsaltanovich.herokuapp.com/');
+const webSocketServer = new WebSocket('ws://localhost:8080');
 
 const handlerServer = new HandlerServerMessages();
 const sendData = new SendData(webSocketServer);
@@ -38,12 +40,13 @@ webSocketServer.onmessage = (responce) => {
     if (type === 'newUser') handlerServer.newUser(json, usersBlock);
     if (type === 'userLeft') handlerServer.userLeft(json, myInfo, usersBlock, blockMessages);
     if (type === 'messageUser') handlerServer.onMessageUser(json, chatUserBlock, userMessages);
+    if (type === 'create') handlerServer.createdNewChat(json, chatNames);
 }
 
 sendButton.addEventListener('click', () => {
     sendData.sendMessageToChat(myInfo, inputMessage.value);
     myUtil.addMessage(myInfo.name, inputMessage.value, blockMessages);
-    inputMessage.value = '';
+    myUtil.clearInputs([inputMessage]);
 });
 const messagesBlockUser = document.querySelector('.userChat__messages');
 
@@ -61,7 +64,7 @@ usersBlock.addEventListener('click', ({ target }) => {
         }
         target.classList.remove('blinking')
         chatUserBlock.dataset.currentUser = userID;
-        chatUserBlock.classList.remove('chatClosed');
+        chatUserBlock.classList.remove('closed');
     }
 });
 
@@ -70,8 +73,8 @@ chatUserBlock.addEventListener('click', ({ target }) => {
 
     if (classOfStyle === 'close') {
         userMessages.deleteMessagesFrom(chatUserBlock.dataset.currentUser);
-        chatUserBlock.classList.add('chatClosed');
-        while (messagesBlockUser.childElementCount) messagesBlockUser.children[0].remove(); 
+        chatUserBlock.classList.add('closed');
+        myUtil.clearAllChildren(messagesBlockUser);
         return;
     }
 
@@ -81,7 +84,34 @@ chatUserBlock.addEventListener('click', ({ target }) => {
     if (classOfStyle === 'send') {
         sendData.sendMessageToUser(chatUserBlock.dataset.currentUser, myInfo, inputTarget.value);
         myUtil.addMessage(myInfo.name, inputTarget.value, blockUserMessages);
-        inputTarget.value = '';
+        myUtil.clearInputs(inputTarget);
         return;
     }
-})
+});
+const toggleClose = (element) => {
+    element.classList.toggle('closed');
+}
+createChatButton.addEventListener('click', () => {
+    toggleClose(newChatBlock);
+});
+
+newChatBlock.querySelector('.newChat-block__close').addEventListener('click', () => {
+    toggleClose(newChatBlock);
+});
+
+newChatBlock.querySelector('.newChat-block__button').addEventListener('click', () => {
+    const nameInput = document.querySelector('.newChat-block__name');
+    const valueInput = document.querySelector('.newChat-block__password');
+
+    const name = nameInput.value;
+    const pass = valueInput.value;
+
+    sendData.sendCreateChat(name, pass);
+    
+    myUtil.clearInputs([nameInput, valueInput]);
+    myUtil.clearAllChildren([usersBlock, blockMessages]);
+
+    myUtil.addPesonInCurrentChat(myInfo, '', usersBlock, myInfo.ID);
+
+    toggleClose(newChatBlock);
+});

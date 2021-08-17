@@ -15,7 +15,7 @@ class HandlerServerMessages {
     onMessageUser(json, chatUserBlock, userMessages) {
         const currUserElem = document.querySelector(`[data-id=${json.fromID}]`);
 
-        if (!chatUserBlock.classList.contains('chatClosed')) {
+        if (!chatUserBlock.classList.contains('closed')) {
             userMessages.addMessageFor(json.fromID, json.message);
             myUtil.addMessage(currUserElem.textContent, json.message, document.querySelector('.userChat__messages'))
             return;
@@ -36,6 +36,10 @@ class HandlerServerMessages {
 
     newUser(json, element) {
         myUtil.addPesonInCurrentChat(json, '', element);
+    }
+
+    createdNewChat(json, chatNamesBlock) {
+        myUtil.createChat(chatNamesBlock, json.chatName, json.ID);
     }
 }
 
