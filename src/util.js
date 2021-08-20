@@ -4,11 +4,13 @@ function addMessage(name, message, element) {
         <span id="name">${name}</span>: <span id="message">${message}</span>
     </div>`);
 }
-function userLeftMessage(currChatID, name, messageBlockElement) {
-    messageBlockElement.insertAdjacentHTML('beforeend', 
-    `<div class="message">
-        <span id="name">${name}</span> <span id="message">Left from the chat :(</span>
-    </div>`);
+function userLeftMessage(currChatID, leftFromChatID, name, messageBlockElement) {
+    if (currChatID === leftFromChatID) {
+        messageBlockElement.insertAdjacentHTML('beforeend', 
+        `<div class="message">
+            <span id="name">${name}</span> <span id="message">Left from the chat :(</span>
+        </div>`);
+    }
 }
 function addPesonInCurrentChat(user, chat, chatElement, myID) {
     if (myID === user.ID) {
@@ -20,6 +22,9 @@ function addPesonInCurrentChat(user, chat, chatElement, myID) {
         `<div class="user hover" data-id="${user.ID}">${user.name}</div>`);
 }
 
+function deletePersonFromUserBlock(userID) {
+    document.querySelector(`[data-id=${userID}]`).remove();
+}
 function createSendMessageTo(fromID, toID, message) {
     return {
         fromID,
@@ -29,11 +34,23 @@ function createSendMessageTo(fromID, toID, message) {
     }
 }
 
+function chooseCurrentChat(newID) {
+    const IDChoosenNow = document.querySelector('#usedCurrentChat');
+    IDChoosenNow.id = '';
+    const currentChatDiv = document.querySelector(`[data-id=${newID}]`);
+    currentChatDiv.id = 'usedCurrentChat';
+}
+
 function getIDFromDocument(target) {
     return target.data.ID;
 }
 
 function createChat(element, name, id) {
+    if (name === 'Main') {
+        element.insertAdjacentHTML('beforeend', 
+        `<span class="chatName" id="usedCurrentChat" data-id="${id}">${name}</span>`);
+        return;
+    }
     element.insertAdjacentHTML('beforeend', 
     `<span class="chatName" data-id="${id}">${name}</span>`);
 }
@@ -62,9 +79,11 @@ const myUtil = {
     addMessage,
     userLeftMessage,
     clearAllChildren,
+    chooseCurrentChat,
     getIDFromDocument,
     createSendMessageTo,
     addPesonInCurrentChat,
+    deletePersonFromUserBlock,
 }
 
 export default myUtil;

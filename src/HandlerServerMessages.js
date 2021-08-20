@@ -1,10 +1,13 @@
 import myUtil from "./util.js";
 
 class HandlerServerMessages {
-    connect(json, userBlockElement) {
+    connect(json, userBlockElement, chatNamesBlock) {
         json.users
         .forEach(user => { 
             myUtil.addPesonInCurrentChat(user, '', userBlockElement, json.myID);
+        });
+        json.chatNames.forEach(chat => {
+            myUtil.createChat(chatNamesBlock, chat.name, chat.chatID);
         });
     }
 
@@ -40,6 +43,23 @@ class HandlerServerMessages {
 
     createdNewChat(json, chatNamesBlock) {
         myUtil.createChat(chatNamesBlock, json.chatName, json.ID);
+    }
+
+    dataFromAnotherChat(json, myID, blockMessages, usersBlock) {
+        if (json.status) {
+            return false;
+        }
+        const children = Array.from(usersBlock.children);
+        children.forEach(elem => {
+            if (elem.dataset.id !== myID)elem.remove();
+        });
+        json.users.forEach(user => {
+            myUtil.addPesonInCurrentChat(user, '', usersBlock);
+        });
+        json.allMessages.forEach(userInfo => {
+            myUtil.addMessage(userInfo.name, userInfo.message, blockMessages);
+        });
+        return true;
     }
 }
 

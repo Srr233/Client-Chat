@@ -22,12 +22,25 @@ class SendData {
         this._webSocketServer.send(jsonString);
     }
 
-    sendCreateChat(nameOfChat, password) {
+    sendCreateChat(nameOfChat, password, currentChatID) {
         const data = { 
             chatName: nameOfChat, 
             password,
+            currentChatID,
             type: 'create'
         };
+        this._webSocketServer.send(JSON.stringify(data));
+    }
+
+    joinChat(userName, chatID, password = '', currentChatID) {
+        const data = {
+            name: userName,
+            chatID,
+            password,
+            currentChatID,
+            type: 'join'
+        }
+
         this._webSocketServer.send(JSON.stringify(data));
     }
 }

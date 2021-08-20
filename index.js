@@ -12,9 +12,12 @@ const inputMessage = document.querySelector('.currMessage');
 const blockMessages = document.querySelector('.block-messages');
 const chatUserBlock = document.querySelector('.userChat');
 
-const myInfo = {};
-// const webSocketServer = new WebSocket('wss://nodejschatsaltanovich.herokuapp.com/');
-const webSocketServer = new WebSocket('ws://localhost:8080');
+const joinChatBlock = document.querySelector('.joinChat');
+
+const myInfo = {
+
+};
+const webSocketServer = new WebSocket('wss://nodejschatsaltanovich.herokuapp.com/');
 
 const handlerServer = new HandlerServerMessages();
 const sendData = new SendData(webSocketServer);
@@ -31,8 +34,8 @@ webSocketServer.onmessage = (responce) => {
         myInfo.name = json.myName;
         myInfo.ID = json.myID;
         myInfo.currentChatID = json.chatID;
-        
-        handlerServer.connect(json, usersBlock);
+
+        handlerServer.connect(json, usersBlock, chatNames);
         return;
     }
 
@@ -40,7 +43,34 @@ webSocketServer.onmessage = (responce) => {
     if (type === 'newUser') handlerServer.newUser(json, usersBlock);
     if (type === 'userLeft') handlerServer.userLeft(json, myInfo, usersBlock, blockMessages);
     if (type === 'messageUser') handlerServer.onMessageUser(json, chatUserBlock, userMessages);
-    if (type === 'create') handlerServer.createdNewChat(json, chatNames);
+    if (type === 'create') { 
+        handlerServer.createdNewChat(json, chatNames);
+        if (myInfo.ID !== json.userID) {
+
+            const nameOfLeft = document.querySelector(`[data-id=${json.userID}]`).textContent;
+            myUtil.deletePersonFromUserBlock(json.userID);
+            myUtil.userLeftMessage(myInfo.currentChatID, json.previousChatID, nameOfLeft, blockMessages);
+            return;
+        }
+
+        myUtil.chooseCurrentChat(json.ID);
+        myInfo.currentChatID = json.ID;
+    }
+    if (type === 'join') {
+        const result = handlerServer.dataFromAnotherChat(json, myInfo.ID, blockMessages, usersBlock);
+        if (!result) {
+            joinChatBlock.querySelector('.joinChat__password').classList.add('red');
+            return;
+        }
+        myUtil.chooseCurrentChat(json.chatID);
+        myInfo.currentChatID = json.chatID;
+        joinChatBlock.querySelector('.joinChat__password').classList.remove('red');
+        joinChatBlock.classList.add('closed');
+    }
+
+    if (type === 'userLeft') {
+        handlerServer.userLeft(json, myInfo, usersBlock, blockMessages);
+    }
 }
 
 sendButton.addEventListener('click', () => {
@@ -102,11 +132,12 @@ newChatBlock.querySelector('.newChat-block__close').addEventListener('click', ()
 newChatBlock.querySelector('.newChat-block__button').addEventListener('click', () => {
     const nameInput = document.querySelector('.newChat-block__name');
     const valueInput = document.querySelector('.newChat-block__password');
+    const currentChat = document.querySelector('#usedCurrentChat').dataset.id;
 
     const name = nameInput.value;
     const pass = valueInput.value;
 
-    sendData.sendCreateChat(name, pass);
+    sendData.sendCreateChat(name, pass, currentChat);
     
     myUtil.clearInputs([nameInput, valueInput]);
     myUtil.clearAllChildren([usersBlock, blockMessages]);
@@ -114,4 +145,42 @@ newChatBlock.querySelector('.newChat-block__button').addEventListener('click', (
     myUtil.addPesonInCurrentChat(myInfo, '', usersBlock, myInfo.ID);
 
     toggleClose(newChatBlock);
+});
+
+chatNames.addEventListener('click', ({ target }) => {
+    const classOfStyle = target.classList[0];
+
+    if (classOfStyle === 'chatName') {
+        const idCurrentChat = target.dataset.id;
+        if (target.textContent !== 'Main') {
+            joinChatBlock.querySelector('.joinChat__name').textContent = target.textContent;
+            joinChatBlock.dataset.id = idCurrentChat;
+            toggleClose(joinChatBlock);
+            return;
+        }
+        const currentChat = document.querySelector('#usedCurrentChat').dataset.id;
+        const input = joinChatBlock.querySelector('.joinChat__password');
+        const pass = input.value;
+        myUtil.clearInputs(input);
+
+        sendData.joinChat(myInfo.name, target.dataset.id, pass, currentChat);
+    }
+});
+
+joinChatBlock.addEventListener('click', ({ target }) => {
+    const classOfStyle = target.classList[0];
+
+    if (classOfStyle === 'joinChat__close') {
+        toggleClose(joinChatBlock);
+        return;
+    }
+
+    if (classOfStyle === 'joinChat__button') {
+        const currentChat = document.querySelector('#usedCurrentChat').dataset.id;
+        const input = joinChatBlock.querySelector('.joinChat__password');
+        const pass = input.value;
+        myUtil.clearInputs(input);
+
+        sendData.joinChat(myInfo.name, joinChatBlock.dataset.id, pass, currentChat);
+    }
 });

@@ -18,9 +18,7 @@
     <main id="main">
         <div class="main">
             <div class="container">
-                <div class="chatNames">
-                    <span class="chatName">Main</span>
-                </div>
+                <div class="chatNames"></div>
                 <div class="chat">
                     <div class="newChat-block closed">
                         <button class="newChat-block__close">x</button>
@@ -28,6 +26,14 @@
                         <input type="text" placeholder="name" class="newChat-block__name">
                         <input type="text" placeholder="password" class="newChat-block__password">
                         <button class="newChat-block__button">create</button>
+                    </div>
+                    <div class="joinChat closed">
+                        <div class="joinChat__nameBlock">
+                            <span class="joinChat__name">name</span>
+                            <button class="joinChat__close">x</button>
+                        </div>
+                        <input type="text" placeholder="password" class="joinChat__password">
+                        <button class="joinChat__button">Join</button>
                     </div>
                     <div class="block-messages"></div>
                     <div class="write-message-block">
