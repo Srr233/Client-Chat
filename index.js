@@ -17,7 +17,8 @@ const joinChatBlock = document.querySelector('.joinChat');
 const myInfo = {
 
 };
-const webSocketServer = new WebSocket('wss://nodejschatsaltanovich.herokuapp.com/');
+// const webSocketServer = new WebSocket('wss://nodejschatsaltanovich.herokuapp.com/');
+const webSocketServer = new WebSocket('ws://localhost:8080');
 
 const handlerServer = new HandlerServerMessages();
 const sendData = new SendData(webSocketServer);
@@ -35,6 +36,7 @@ webSocketServer.onmessage = (responce) => {
         myInfo.ID = json.myID;
         myInfo.currentChatID = json.chatID;
 
+        json.messages.forEach(message => myUtil.addMessageText(message, blockMessages));
         handlerServer.connect(json, usersBlock, chatNames);
         return;
     }
@@ -57,6 +59,7 @@ webSocketServer.onmessage = (responce) => {
         myInfo.currentChatID = json.ID;
     }
     if (type === 'join') {
+        myUtil.clearAllChildren(blockMessages);
         const result = handlerServer.dataFromAnotherChat(json, myInfo.ID, blockMessages, usersBlock);
         if (!result) {
             joinChatBlock.querySelector('.joinChat__password').classList.add('red');

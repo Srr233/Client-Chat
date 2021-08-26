@@ -4,6 +4,11 @@ function addMessage(name, message, element) {
         <span id="name">${name}</span>: <span id="message">${message}</span>
     </div>`);
 }
+
+function addMessageText(message, element) {
+    element.insertAdjacentHTML('beforeend', `<div>${message}</div>`);
+}
+
 function userLeftMessage(currChatID, leftFromChatID, name, messageBlockElement) {
     if (currChatID === leftFromChatID) {
         messageBlockElement.insertAdjacentHTML('beforeend', 
@@ -23,7 +28,7 @@ function addPesonInCurrentChat(user, chat, chatElement, myID) {
 }
 
 function deletePersonFromUserBlock(userID) {
-    document.querySelector(`[data-id=${userID}]`).remove();
+    document.querySelector(`[data-id="${userID}"]`).remove();
 }
 function createSendMessageTo(fromID, toID, message) {
     return {
@@ -37,7 +42,7 @@ function createSendMessageTo(fromID, toID, message) {
 function chooseCurrentChat(newID) {
     const IDChoosenNow = document.querySelector('#usedCurrentChat');
     IDChoosenNow.id = '';
-    const currentChatDiv = document.querySelector(`[data-id=${newID}]`);
+    const currentChatDiv = document.querySelector(`[data-id="${newID}"]`);
     currentChatDiv.id = 'usedCurrentChat';
 }
 
@@ -77,6 +82,7 @@ const myUtil = {
     clearInputs,
     createChat,
     addMessage,
+    addMessageText,
     userLeftMessage,
     clearAllChildren,
     chooseCurrentChat,

@@ -16,7 +16,7 @@ class HandlerServerMessages {
     }
 
     onMessageUser(json, chatUserBlock, userMessages) {
-        const currUserElem = document.querySelector(`[data-id=${json.fromID}]`);
+        const currUserElem = document.querySelector(`[data-id="${json.fromID}"]`);
 
         if (!chatUserBlock.classList.contains('closed')) {
             userMessages.addMessageFor(json.fromID, json.message);
@@ -56,8 +56,8 @@ class HandlerServerMessages {
         json.users.forEach(user => {
             myUtil.addPesonInCurrentChat(user, '', usersBlock);
         });
-        json.allMessages.forEach(userInfo => {
-            myUtil.addMessage(userInfo.name, userInfo.message, blockMessages);
+        json.allMessages.forEach(message => {
+            myUtil.addMessageText(message, blockMessages);
         });
         return true;
     }
