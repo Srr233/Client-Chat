@@ -34,7 +34,7 @@ class HandlerServerMessages {
         for (const user of json.users) {
             myUtil.addPesonInCurrentChat(user, '', elementUsers, myInfo.ID);
         }
-        myUtil.userLeftMessage('', json.nameOfUser, elementMessages);
+        myUtil.userLeftMessage(myInfo.currentChatID, json.chatID, json.nameOfUser, elementMessages);
     }
 
     newUser(json, element) {

@@ -70,10 +70,6 @@ webSocketServer.onmessage = (responce) => {
         joinChatBlock.querySelector('.joinChat__password').classList.remove('red');
         joinChatBlock.classList.add('closed');
     }
-
-    if (type === 'userLeft') {
-        handlerServer.userLeft(json, myInfo, usersBlock, blockMessages);
-    }
 }
 
 sendButton.addEventListener('click', () => {
