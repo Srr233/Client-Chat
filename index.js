@@ -18,8 +18,8 @@ const joinChatBlock = document.querySelector('.joinChat');
 const myInfo = {
     deleteKey: nanoid(5)
 };
-// const webSocketServer = new WebSocket('wss://nodejschatsaltanovich.herokuapp.com/');
-const webSocketServer = new WebSocket('ws://localhost:8080');
+const webSocketServer = new WebSocket('wss://nodejschatsaltanovich.herokuapp.com/');
+// const webSocketServer = new WebSocket('ws://localhost:8080');
 
 const handlerServer = new HandlerServerMessages();
 const sendData = new SendData(webSocketServer);
