@@ -51,10 +51,10 @@ class HandlerServerMessages {
         }
         const children = Array.from(usersBlock.children);
         children.forEach(elem => {
-            if (elem.dataset.id !== myID)elem.remove();
+            if (elem.dataset.id !== myID) elem.remove();
         });
         json.users.forEach(user => {
-            myUtil.addPesonInCurrentChat(user, '', usersBlock);
+            if (user.ID !== myID) myUtil.addPesonInCurrentChat(user, '', usersBlock);
         });
         json.allMessages.forEach(message => {
             myUtil.addMessageText(message, blockMessages);

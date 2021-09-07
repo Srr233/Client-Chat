@@ -2,6 +2,7 @@ import myUtil from './src/util.js';
 import UserMessages from './src/UserMessages.js';
 import HandlerServerMessages from './src/HandlerServerMessages.js';
 import SendData from './src/SendData.js';
+import { nanoid } from './node_modules/nanoid/nanoid.js';
 
 const createChatButton = document.querySelector('.createChat');
 const chatNames = document.querySelector('.chatNames');
@@ -15,10 +16,10 @@ const chatUserBlock = document.querySelector('.userChat');
 const joinChatBlock = document.querySelector('.joinChat');
 
 const myInfo = {
-
+    deleteKey: nanoid(5)
 };
-const webSocketServer = new WebSocket('wss://nodejschatsaltanovich.herokuapp.com/');
-// const webSocketServer = new WebSocket('ws://localhost:8080');
+// const webSocketServer = new WebSocket('wss://nodejschatsaltanovich.herokuapp.com/');
+const webSocketServer = new WebSocket('ws://localhost:8080');
 
 const handlerServer = new HandlerServerMessages();
 const sendData = new SendData(webSocketServer);
@@ -35,6 +36,7 @@ webSocketServer.onmessage = (responce) => {
         myInfo.name = json.myName;
         myInfo.ID = json.myID;
         myInfo.currentChatID = json.chatID;
+        myInfo.mainChatID = json.chatID;
 
         json.messages.forEach(message => myUtil.addMessageText(message, blockMessages));
         handlerServer.connect(json, usersBlock, chatNames);
@@ -69,6 +71,17 @@ webSocketServer.onmessage = (responce) => {
         myInfo.currentChatID = json.chatID;
         joinChatBlock.querySelector('.joinChat__password').classList.remove('red');
         joinChatBlock.classList.add('closed');
+    }
+    if (type === 'deleteChat') {
+        if (json.status) {
+            alert('You can\'t delete the chat, you aren\'t an admin!');
+            return;
+        }
+        document.querySelector(`[data-id="${json.chatID}"]`).remove();
+        if (myInfo.currentChatID === json.chatID) {
+            document.querySelector(`[data-id="${myInfo.mainChatID}"]`).id = 'usedCurrentChat';
+            sendData.joinChat(myInfo.name, myInfo.mainChatID, '', myInfo.currentChatID);
+        }
     }
 }
 
@@ -135,8 +148,8 @@ newChatBlock.querySelector('.newChat-block__button').addEventListener('click', (
 
     const name = nameInput.value;
     const pass = valueInput.value;
-
-    sendData.sendCreateChat(name, pass, currentChat);
+    const deleteKey = myInfo.deleteKey;
+    sendData.sendCreateChat(name, pass, currentChat, deleteKey);
     
     myUtil.clearInputs([nameInput, valueInput]);
     myUtil.clearAllChildren([usersBlock, blockMessages]);
@@ -175,11 +188,23 @@ joinChatBlock.addEventListener('click', ({ target }) => {
     }
 
     if (classOfStyle === 'joinChat__button') {
-        const currentChat = document.querySelector('#usedCurrentChat').dataset.id;
-        const input = joinChatBlock.querySelector('.joinChat__password');
-        const pass = input.value;
-        myUtil.clearInputs(input);
+        const type = target.textContent;
 
-        sendData.joinChat(myInfo.name, joinChatBlock.dataset.id, pass, currentChat);
+        if (type === 'Join') {
+            const currentChat = document.querySelector('#usedCurrentChat').dataset.id;
+            const input = joinChatBlock.querySelector('.joinChat__password');
+            const pass = input.value;
+            myUtil.clearInputs(input);
+
+            sendData.joinChat(myInfo.name, joinChatBlock.dataset.id, pass, currentChat);
+        }
+
+        if (type === 'Delete') {
+            webSocketServer.send(JSON.stringify({
+                deleteKey: myInfo.deleteKey,
+                chatID: joinChatBlock.dataset.id,
+                type: 'deleteChat'
+            }));
+        }
     }
 });
