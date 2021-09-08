@@ -27,6 +27,12 @@
                         <input type="text" placeholder="password" class="newChat-block__password">
                         <button class="newChat-block__button">create</button>
                     </div>
+                    <div class="changeNameDiv closed">
+                        <button class="changeNameDiv__close">x</button>
+                        <span>Change name</span>
+                        <input type="text" placeholder="name" class="changeNameDiv__name">
+                        <button class="changeNameDiv__button">change</button>
+                    </div>
                     <div class="joinChat closed">
                         <div class="joinChat__nameBlock">
                             <span class="joinChat__name">name</span>
@@ -53,7 +59,10 @@
                     </div>
                 </div>
                 <div class="users"></div>
-                <button class="createChat">Create chat</button>
+                <div class="buttonsChat">
+                    <button class="createChat">Create chat</button>
+                    <button class="changeName">Change name</button>
+                </div>
             </div>
         </div>
     </main>

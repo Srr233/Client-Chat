@@ -78,10 +78,16 @@ function clearAllChildren(element) {
     while(element.childElementCount) element.children[0].remove();
 }
 
+function setName(idOfUser, name) {
+    const user = document.querySelector(`[data-id="${idOfUser}"]`);
+
+    if (user) user.textContent = name;
+}
 const myUtil = {
-    clearInputs,
+    setName,
     createChat,
     addMessage,
+    clearInputs,
     addMessageText,
     userLeftMessage,
     clearAllChildren,

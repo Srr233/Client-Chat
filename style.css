@@ -48,7 +48,7 @@ button {
             "chat chat users"
             "chat chat users"
             "chat chat users"
-            "chat chat createChat";
+            "chat chat buttonsChat";
 }
 
 .flexBlocks {
@@ -82,9 +82,12 @@ button {
     grid-area: chat;
     background-color: burlywood;
 }
-.createChat {
+.buttonsChat {
     font-size: 2rem;
-    grid-area: createChat;
+    grid-area: buttonsChat;
+
+    display: flex;
+    justify-content: space-evenly;
 }
 .users {
     margin: 5px;
@@ -162,6 +165,33 @@ button {
 .blinking {
     -webkit-animation: blinking 1.0s infinite;
         animation: blinking 1.0s infinite;
+}
+
+.changeNameDiv {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    background-color: bisque;
+    border: ivory 5px solid;
+    transform: translate(-50%, -50%);
+
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    justify-content: center;
+
+    font-size: 2rem;
+    padding: 5px;
+}
+
+.changeNameDiv__close {
+    align-self: flex-end;
+}
+
+.changeNameDiv__name{ 
+    max-width: 250px;
+    padding: 5px;
+    margin: 5px;
 }
 
 .newChat-block {

@@ -1,7 +1,7 @@
 import myUtil from "./util.js";
 
 class HandlerServerMessages {
-    connect(json, userBlockElement, chatNamesBlock) {
+    connect(json, userBlockElement, chatNamesBlock, hasName, myId) {
         json.users
         .forEach(user => { 
             myUtil.addPesonInCurrentChat(user, '', userBlockElement, json.myID);
@@ -9,6 +9,8 @@ class HandlerServerMessages {
         json.chatNames.forEach(chat => {
             myUtil.createChat(chatNamesBlock, chat.name, chat.chatID);
         });
+
+        if (hasName) myUtil.setName(myId, hasName);
     }
 
     onMessageChat(json, element) {

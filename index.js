@@ -12,14 +12,15 @@ const sendButton = document.querySelector('.send');
 const inputMessage = document.querySelector('.currMessage');
 const blockMessages = document.querySelector('.block-messages');
 const chatUserBlock = document.querySelector('.userChat');
+const changeNameButton = document.querySelector('.changeName');
 
 const joinChatBlock = document.querySelector('.joinChat');
 
 const myInfo = {
     deleteKey: nanoid(5)
 };
-const webSocketServer = new WebSocket('wss://nodejschatsaltanovich.herokuapp.com/');
-// const webSocketServer = new WebSocket('ws://localhost:8080');
+// const webSocketServer = new WebSocket('wss://nodejschatsaltanovich.herokuapp.com/');
+const webSocketServer = new WebSocket('ws://localhost:8080');
 
 const handlerServer = new HandlerServerMessages();
 const sendData = new SendData(webSocketServer);
@@ -30,7 +31,7 @@ webSocketServer.onopen = () => {
 }
 webSocketServer.onmessage = (responce) => {
     const json = JSON.parse(responce.data);
-    const type = json.type;
+    const { type, what } = json;
 
     if (type === 'connect') {
         myInfo.name = json.myName;
@@ -38,8 +39,20 @@ webSocketServer.onmessage = (responce) => {
         myInfo.currentChatID = json.chatID;
         myInfo.mainChatID = json.chatID;
 
+        const myName = localStorage.getItem('myName');
+        if (myName) {
+            const data = {
+                type: 'change',
+                what: 'name',
+                newName: myName,
+                ID: myInfo.ID
+            }
+            myInfo.name = myName;
+            webSocketServer.send(JSON.stringify(data));
+        }   
+
         json.messages.forEach(message => myUtil.addMessageText(message, blockMessages));
-        handlerServer.connect(json, usersBlock, chatNames);
+        handlerServer.connect(json, usersBlock, chatNames, myName, myInfo.ID);
         return;
     }
 
@@ -82,6 +95,9 @@ webSocketServer.onmessage = (responce) => {
             document.querySelector(`[data-id="${myInfo.mainChatID}"]`).id = 'usedCurrentChat';
             sendData.joinChat(myInfo.name, myInfo.mainChatID, '', myInfo.currentChatID);
         }
+    }
+    if (type === 'change' && what === 'name') {
+        myUtil.setName(json.userID, json.newName);
     }
 }
 
@@ -208,3 +224,38 @@ joinChatBlock.addEventListener('click', ({ target }) => {
         }
     }
 });
+
+const changeNameBlock = document.querySelector('.changeNameDiv');
+
+changeNameButton.addEventListener('click', () => {
+    changeNameBlock.classList.toggle('closed');
+});
+
+changeNameBlock.addEventListener('click', ({ target }) => {
+    const styleOfTarget = target.classList[0];
+
+    if (styleOfTarget === 'changeNameDiv__close') {
+        changeNameBlock.classList.add('closed');
+    }
+
+    if (styleOfTarget === 'changeNameDiv__button') {
+        const inputVal = document.querySelector('.changeNameDiv__name');
+        const newName = inputVal.value;
+        if (newName.length > 2) {
+            inputVal.value = '';
+            const data = {
+                type: 'change',
+                what: 'name',
+                newName: newName,
+                ID: myInfo.ID
+            }
+            myInfo.name = newName;
+            myUtil.setName(myInfo.ID, newName)
+            localStorage.setItem('myName', newName);
+            webSocketServer.send(JSON.stringify(data));
+            changeNameBlock.classList.toggle('closed');
+        } else {
+            alert('Name must be more than 2 letters!');
+        }
+    }
+})
